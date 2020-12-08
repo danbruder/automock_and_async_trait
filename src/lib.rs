@@ -8,6 +8,10 @@ pub trait Sick {
     async fn cough(&self) -> String;
 }
 
+pub async fn hospital(patient: &impl Sick) -> String {
+    patient.cough().await
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -16,7 +20,7 @@ mod test {
     async fn test_thing() {
         let mut mock = MockSick::new();
         mock.expect_cough().returning(|| "hey".into());
-        let got = mock.cough().await;
+        let got = hospital(&mock).await;
         let want = "hey".to_string();
         assert_eq!(got, want);
     }
